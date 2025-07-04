@@ -2,3 +2,7 @@ fastapi
 uvicorn[standard]
 pydantic
 python-dotenv
+python-dotenv 
+pydantic-settings
+python-decouple
+pymongo
