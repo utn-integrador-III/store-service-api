@@ -4,9 +4,16 @@ import logging
 from bson.objectid import ObjectId
 from fastapi import HTTPException, status
 from typing import List, Dict
+from bson.errors import InvalidId
 
 client = MongoClient(config("MONGO_URL"))
 db = client[config("MONGO_DB")]
+
+def get_database():
+    """
+    Permite que otras partes de la app (como main.py) usen la conexión a la BD.
+    """
+    return db
 
 def serialize_document(doc):
     if doc and "_id" in doc:
@@ -37,16 +44,35 @@ class Connection:
             logging.error(f"Error en find_one: {e}")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error al buscar el documento.")
 
-    def get_by_id(self, id: str) -> Dict:
+    def get_by_id(self, id: str) -> dict:
+        """
+        Busca un documento por su ID.
+        - Limpia espacios/saltos de línea del ID.
+        - Valida el formato del ObjectId.
+        - Maneja el caso en que el documento no se encuentra.
+        """
         try:
-            result = self.collection.find_one({"_id": ObjectId(id)})
+            obj_id = ObjectId(id.strip())
+        except InvalidId:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"El formato del ID '{id.strip()}' no es válido."
+            )
+
+        try:
+            result = self.collection.find_one({"_id": obj_id})
             if not result:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Documento con id '{id}' no encontrado.")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"No se encontró un documento con el id '{id.strip()}'."
+                )
             return serialize_document(result)
-        except HTTPException as he:
-            raise he
-        except Exception:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Formato de ID inválido.")
+        except Exception as e:
+            logging.error(f"Error de base de datos en get_by_id: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Ocurrió un error inesperado al consultar la base de datos."
+            )
 
     def create_data(self, data: Dict) -> Dict:
         try:
