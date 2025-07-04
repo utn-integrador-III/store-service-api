@@ -100,3 +100,19 @@ class Connection:
         except Exception as e:
             logging.error(f"Error en delete_data: {e}")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error al eliminar el documento.")
+
+    def find_many(self, query: Dict) -> List[Dict]:
+        """
+        Busca múltiples documentos que coincidan con la consulta.
+        Retorna una lista de documentos serializados.
+        """
+        try:
+            cursor = self.collection.find(query)
+            results = [serialize_document(doc) for doc in cursor]
+            return results
+        except Exception as e:
+            logging.error(f"Error en find_many: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                detail="Error al buscar los documentos."
+            )
