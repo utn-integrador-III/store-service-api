@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from pymongo.database import Database
 from controllers import enterprise
-from bd.mono_client import get_database
+from bd.mongo_client import get_database
 from utils.responses import success_response
 
 app = FastAPI(
