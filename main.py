@@ -2,7 +2,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from pymongo.database import Database
-from controllers import enterprise
+from controllers import enterprise, appointments
 from bd.mono_client import get_database
 from utils.responses import success_response
 
@@ -13,7 +13,7 @@ app = FastAPI(
 )
 
 app.include_router(enterprise.router, prefix="/api/v1")
-
+app.include_router(appointments.router, prefix="/api/v1")
 
 @app.get(
     "/api/v1/health",
