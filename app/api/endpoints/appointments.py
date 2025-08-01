@@ -27,3 +27,20 @@ async def create_appointment(
     )
     
     return AppointmentResponse.model_validate(appointment)
+
+@router.get("/me", response_model=List[AppointmentResponse])
+async def get_my_appointments(
+    db: AsyncIOMotorDatabase = Depends(get_database),
+    current_user: UserResponse = Depends(get_current_user)
+):
+    appointments = await crud_appointment.get_appointments_by_user_id(db, user_id=current_user.id)
+    return [AppointmentResponse.model_validate(app) for app in appointments]
+
+
+@router.get("/business/{business_id}", response_model=List[AppointmentResponse])
+async def get_business_appointments(
+    business_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    appointments = await crud_appointment.get_appointments_by_business_id(db, business_id=business_id)
+    return [AppointmentResponse.model_validate(app) for app in appointments]
