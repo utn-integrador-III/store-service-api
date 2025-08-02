@@ -1,8 +1,11 @@
 fastapi
-uvicorn[standard]
+uvicorn
 pydantic
-python-dotenv
-python-dotenv 
 pydantic-settings
-python-decouple
+motor
+python-jose[cryptography]
+passlib[bcrypt]
 pymongo
+python-dotenv
+email-validator
+python-multipart

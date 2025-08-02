@@ -1,0 +1,19 @@
+LO PRIMERO 
+
+python -m venv venv 
+
+SEGUNDO 
+
+.\venv\Scripts\activate 
+
+TERCERO
+
+pip install -r requirements.txt 
+
+ULTIMO 
+
+python run.py
+
+** AL FINAL CUANDO SE VA A SUBIR **
+
+eliminar la carpeta venv
