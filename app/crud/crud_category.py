@@ -13,6 +13,7 @@ async def get_category_by_name(db: AsyncIOMotorDatabase, name: str):
 async def get_all_categories(db: AsyncIOMotorDatabase):
     return await db["categories"].find().to_list(1000)
 
+
 async def update_category(db: AsyncIOMotorDatabase, category_id: str, category_in: CategoryUpdate):
     update_data = category_in.model_dump(exclude_unset=True)
     if not update_data:
@@ -23,6 +24,7 @@ async def update_category(db: AsyncIOMotorDatabase, category_id: str, category_i
         {"$set": update_data}
     )
     return await db["categories"].find_one({"_id": ObjectId(category_id)})
+
 
 async def delete_category(db: AsyncIOMotorDatabase, category_id: str):
     delete_result = await db["categories"].delete_one({"_id": ObjectId(category_id)})

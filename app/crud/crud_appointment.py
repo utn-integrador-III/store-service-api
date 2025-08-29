@@ -34,6 +34,7 @@ async def get_appointments_by_user_id(db: AsyncIOMotorDatabase, user_id: str):
 
 async def get_appointments_by_business_id(db: AsyncIOMotorDatabase, business_id: str):
     return await db["appointments"].find({"business_id": ObjectId(business_id)}).to_list(1000)
+
 async def get_appointments_by_business_id_and_date(
     db: AsyncIOMotorDatabase,
     business_id: str,
@@ -49,7 +50,6 @@ async def get_appointments_by_business_id_and_date(
     }
     if employee_id:
         query["employee_id"] = ObjectId(employee_id)
-    
     
     pipeline = [
         {"$match": query},
@@ -95,6 +95,7 @@ async def get_business_appointments_with_users(db: AsyncIOMotorDatabase, busines
         },
         {
             "$project": {
+                "_id": 1,
                 "user": "$user_info",
                 "appointment_time": 1,
                 "status": 1,

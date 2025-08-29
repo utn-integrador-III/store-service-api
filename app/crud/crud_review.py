@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -10,6 +11,7 @@ from pymongo import ReturnDocument
 
 COLL = "reviews"
 BUSINESSES = "businesses"
+
 
 
 def _to_oid(x: Any) -> Optional[ObjectId]:
@@ -35,6 +37,7 @@ def _id_choices(value: Any) -> List[Any]:
     return out
 
 
+
 async def get_reviews_by_business(db: AsyncIOMotorDatabase, business_id: str) -> List[Dict[str, Any]]:
     ids = _id_choices(business_id)
     reviews = (
@@ -53,6 +56,7 @@ async def get_user_review_for_appointment(
     return await db[COLL].find_one({"user_id": user_id, "appointment_id": {"$in": ids}})
 
 
+
 async def create_review(
     db: AsyncIOMotorDatabase,
     *,
@@ -64,8 +68,8 @@ async def create_review(
 ) -> Dict[str, Any]:
     now = datetime.utcnow()
     doc = {
-        "business_id": business_id,              
-        "appointment_id": appointment_id,        
+        "business_id": business_id,
+        "appointment_id": appointment_id,
         "user_id": user_id,
         "rating": int(rating),
         "comment": comment or "",
@@ -83,6 +87,7 @@ async def update_review(
     user_id: str,
     data: Dict[str, Any],
 ) -> Optional[Dict[str, Any]]:
+
     data = {**data, "updated_at": datetime.utcnow()}
     return await db[COLL].find_one_and_update(
         {"_id": _to_oid(review_id), "user_id": user_id},
@@ -100,7 +105,7 @@ async def add_reply(
     db: AsyncIOMotorDatabase,
     *,
     review_id: str,
-    author_role: str,      
+    author_role: str,
     author_id: str,
     content: str,
 ) -> Dict[str, Any]:
@@ -112,6 +117,7 @@ async def add_reply(
         return_document=ReturnDocument.AFTER,
     )
     return doc
+
 
 
 async def recompute_business_rating(db: AsyncIOMotorDatabase, business_id: str) -> None:
@@ -134,7 +140,9 @@ async def recompute_business_rating(db: AsyncIOMotorDatabase, business_id: str) 
         avg = 0.0
         count = 0
 
+
     avg_rounded = round(avg, 1)
+
 
     await db[BUSINESSES].update_one(
         {"_id": _to_oid(business_id)},

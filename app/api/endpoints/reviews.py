@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from typing import List, Optional, Dict, Any
@@ -14,6 +15,7 @@ from app.schemas.review import ReviewCreate, ReviewUpdate, ReviewResponse
 from app.crud import crud_review, crud_appointment, crud_business
 
 router = APIRouter()
+
 
 
 def _ensure_updated_at(docs: List[dict]) -> None:
@@ -58,6 +60,7 @@ def _normalize_review_doc(doc: Dict[str, Any]) -> Dict[str, Any]:
     return d
 
 
+
 @router.get("/business/{business_id}", response_model=List[ReviewResponse])
 async def list_reviews(
     business_id: str,
@@ -67,6 +70,7 @@ async def list_reviews(
     _ensure_updated_at(reviews)
     normalized = [_normalize_review_doc(r) for r in reviews]
     return [ReviewResponse.model_validate(r) for r in normalized]
+
 
 
 @router.get("/eligibility/{business_id}")
@@ -80,8 +84,10 @@ async def can_review(
     - Admins y Dueños: Siempre pueden.
     - Usuarios: Necesitan una cita pasada y no cancelada.
     """
+
     if current_user.role in ["admin", "dueño"]:
         return {"eligible": True, "appointment_id": None}
+
 
     now = datetime.utcnow()
     user_apps = await crud_appointment.get_appointments_by_user_id(db, current_user.id)
@@ -126,6 +132,7 @@ async def create_review(
     """
     appointment_id = payload.appointment_id
 
+
     if current_user.role not in ["admin", "dueño"]:
         if not appointment_id:
             raise HTTPException(status_code=400, detail="Los usuarios deben tener una cita para poder comentar.")
@@ -141,7 +148,7 @@ async def create_review(
     doc = await crud_review.create_review(
         db,
         business_id=payload.business_id,
-        appointment_id=appointment_id, 
+        appointment_id=appointment_id,
         user_id=current_user.id,
         rating=payload.rating,
         comment=payload.comment or "",
@@ -160,6 +167,7 @@ async def create_review(
     normalized = _normalize_review_doc(doc)
     _ensure_updated_at([normalized])
     return ReviewResponse.model_validate(normalized)
+
 
 
 @router.patch("/{review_id}", response_model=ReviewResponse)
@@ -199,7 +207,7 @@ async def delete_review(
     db: AsyncIOMotorDatabase = Depends(get_database),
     current_user: UserResponse = Depends(get_current_user),
 ):
-    review = await db["reviews"].find_one({"_id": ObjectId(review_id)})  # type: ignore
+    review = await db["reviews"].find_one({"_id": ObjectId(review_id)})
     if not review or str(review.get("user_id")) != current_user.id:
         raise HTTPException(status_code=404, detail="Reseña no encontrada.")
 
@@ -228,7 +236,8 @@ async def reply_review(
 
     business = await crud_business.get_business(db, str(review.get("business_id")))
     
- 
+
+
     is_business_owner = business and str(business.get("owner_id")) == current_user.id
     is_admin = current_user.role == "admin"
     
@@ -236,6 +245,7 @@ async def reply_review(
         raise HTTPException(status_code=403, detail="No autorizado para responder.")
 
     role = "admin" if is_admin else "owner"
+
 
     doc = await crud_review.add_reply(
         db,

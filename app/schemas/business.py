@@ -43,8 +43,10 @@ class BusinessResponse(BusinessBase):
     status: str
     schedule: Optional[Schedule] = None
     appointment_mode: Optional[str] = "generico"
+
     avg_rating: Optional[float] = 0.0
     reviews_count: Optional[int] = 0
+
 
     class Config:
         from_attributes = True
