@@ -23,10 +23,8 @@ from app.services.notification_service import (
 
 router = APIRouter()
 
-
 class EmailPayload(BaseModel):
     email: Optional[EmailStr] = None
-
 
 @router.post("/", response_model=AppointmentResponse, status_code=status.HTTP_201_CREATED)
 async def create_appointment(
@@ -34,7 +32,6 @@ async def create_appointment(
     db: AsyncIOMotorDatabase = Depends(get_database),
     current_user: UserResponse = Depends(get_current_user),
 ):
-
     appt = await crud_appointment.create(
         db=db,
         business_id=appointment_in.business_id,
@@ -48,7 +45,7 @@ async def create_appointment(
 @router.post("/{appointment_id}/send-pdf", status_code=status.HTTP_200_OK)
 async def send_appointment_pdf_email(
     appointment_id: str,
-   
+    
     payload: EmailPayload, 
     db: AsyncIOMotorDatabase = Depends(get_database),
     current_user: UserResponse = Depends(get_current_user),
@@ -57,9 +54,8 @@ async def send_appointment_pdf_email(
     if not appointment:
         raise HTTPException(status_code=404, detail="Cita no encontrada o no te pertenece.")
 
-    
+   
     target_email = payload.email if payload.email else current_user.email
-
 
     business = await crud_business.get_business(db, str(appointment["business_id"]))
     details = {
@@ -81,7 +77,6 @@ async def send_appointment_pdf_email(
     success = await run_in_threadpool(
         send_confirmation_email,
         user_email=target_email, 
-      
         details=details,
         pdf_bytes=pdf_bytes,
     )

@@ -13,3 +13,6 @@ pip install -r requirements.txt
 ULTIMO 
 
 python run.py
+
+AL FINAL DEL TODO CORRER ESTO
+docker compose up --build

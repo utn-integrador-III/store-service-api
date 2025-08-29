@@ -1,4 +1,3 @@
-# backend/app/crud/crud_user.py
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
