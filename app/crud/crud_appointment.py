@@ -34,8 +34,6 @@ async def get_appointments_by_user_id(db: AsyncIOMotorDatabase, user_id: str):
 
 async def get_appointments_by_business_id(db: AsyncIOMotorDatabase, business_id: str):
     return await db["appointments"].find({"business_id": ObjectId(business_id)}).to_list(1000)
-
-
 async def get_appointments_by_business_id_and_date(
     db: AsyncIOMotorDatabase,
     business_id: str,
@@ -47,10 +45,11 @@ async def get_appointments_by_business_id_and_date(
     query: Dict[str, Any] = {
         "business_id": ObjectId(business_id),
         "appointment_time": {"$gte": start_of_day, "$lt": end_of_day},
-        "status": {"$ne": "cancelled"} 
+        "status": {"$ne": "cancelled"}
     }
     if employee_id:
         query["employee_id"] = ObjectId(employee_id)
+    
     
     pipeline = [
         {"$match": query},
@@ -65,7 +64,7 @@ async def get_appointments_by_business_id_and_date(
         {
             "$unwind": {
                 "path": "$user_info",
-                "preserveNullAndEmptyArrays": True 
+                "preserveNullAndEmptyArrays": True
             }
         }
     ]

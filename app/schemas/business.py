@@ -1,7 +1,5 @@
-
 from pydantic import BaseModel, Field
 from typing import Optional, List
-
 
 class ScheduleDay(BaseModel):
     is_active: bool = False
@@ -34,6 +32,8 @@ class BusinessUpdate(BaseModel):
     address: Optional[str] = Field(None, min_length=5)
     photos: Optional[List[str]] = None
     categories: Optional[List[str]] = None
+    logo_url: Optional[str] = None
+    appointment_mode: Optional[str] = None  
 
 class BusinessResponse(BusinessBase):
     id: str
@@ -42,6 +42,9 @@ class BusinessResponse(BusinessBase):
     categories: List[str]
     status: str
     schedule: Optional[Schedule] = None
+    appointment_mode: Optional[str] = "generico"
+    avg_rating: Optional[float] = 0.0
+    reviews_count: Optional[int] = 0
 
     class Config:
         from_attributes = True

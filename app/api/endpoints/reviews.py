@@ -228,6 +228,7 @@ async def reply_review(
 
     business = await crud_business.get_business(db, str(review.get("business_id")))
     
+ 
     is_business_owner = business and str(business.get("owner_id")) == current_user.id
     is_admin = current_user.role == "admin"
     

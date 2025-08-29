@@ -61,7 +61,7 @@ async def text_to_speech(payload: dict):
             input=synthesis_input, voice=voice, audio_config=audio_config
         )
         
-        
+
         return Response(content=response.audio_content, media_type="audio/mpeg")
 
     except Exception as e:

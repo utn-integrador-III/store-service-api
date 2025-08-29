@@ -1,4 +1,3 @@
-# app/crud/crud_review.py
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -65,8 +64,8 @@ async def create_review(
 ) -> Dict[str, Any]:
     now = datetime.utcnow()
     doc = {
-        "business_id": business_id,             
-        "appointment_id": appointment_id,       
+        "business_id": business_id,              
+        "appointment_id": appointment_id,        
         "user_id": user_id,
         "rating": int(rating),
         "comment": comment or "",
@@ -84,7 +83,6 @@ async def update_review(
     user_id: str,
     data: Dict[str, Any],
 ) -> Optional[Dict[str, Any]]:
- 
     data = {**data, "updated_at": datetime.utcnow()}
     return await db[COLL].find_one_and_update(
         {"_id": _to_oid(review_id), "user_id": user_id},
@@ -114,7 +112,6 @@ async def add_reply(
         return_document=ReturnDocument.AFTER,
     )
     return doc
-
 
 
 async def recompute_business_rating(db: AsyncIOMotorDatabase, business_id: str) -> None:
