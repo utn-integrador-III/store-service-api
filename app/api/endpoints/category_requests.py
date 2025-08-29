@@ -14,9 +14,7 @@ async def submit_category_request(
     db: AsyncIOMotorDatabase = Depends(get_database),
     owner: UserResponse = Depends(get_current_owner_user)
 ):
-    """
-    Permite a un dueño enviar una solicitud para una nueva categoría.
-    """
+    
     request_data_with_owner = request_in.model_dump()
     request_data_with_owner['owner_id'] = owner.id
     
