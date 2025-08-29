@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from motor.motor_asyncio import AsyncIOMotorDatabase
+from bson import ObjectId
 
 from app.db.session import get_database
 from app.crud import crud_user
@@ -76,3 +77,10 @@ async def get_all_owners(db: AsyncIOMotorDatabase = Depends(get_database), curre
 async def get_pending_category_requests_route(db: AsyncIOMotorDatabase = Depends(get_database), current_user: UserResponse = Depends(get_current_admin_user)):
     requests = await crud_user.get_pending_category_requests(db)
     return requests
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user_by_id(user_id: str, db: AsyncIOMotorDatabase = Depends(get_database)):
+    user = await crud_user.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return user
