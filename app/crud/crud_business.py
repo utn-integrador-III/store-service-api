@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
 from datetime import datetime, timedelta
 from app.schemas.business import BusinessCreate, BusinessUpdate, Schedule
-from app.crud import crud_appointment 
+from app.crud import crud_appointment
 
 async def get_business(db: AsyncIOMotorDatabase, business_id: str):
     if not ObjectId.is_valid(business_id):
@@ -49,6 +49,7 @@ async def update_business_schedule(db: AsyncIOMotorDatabase, business_id: str, s
     await db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": {"schedule": schedule_in.model_dump()}})
     return await get_business(db, business_id)
 
+
 async def get_available_slots_for_day(
     db: AsyncIOMotorDatabase,
     business_id: str,
@@ -82,9 +83,11 @@ async def get_available_slots_for_day(
         all_slots_times.append(cur.strftime("%H:%M"))
         cur += timedelta(minutes=slot_duration)
     
+
     appointments = await crud_appointment.get_appointments_by_business_id_and_date(
         db, business_id, request_date, employee_id=employee_id
     )
+
 
     bookings_by_slot: Dict[str, List[Dict[str, Any]]] = {}
     for app in appointments:
@@ -100,6 +103,7 @@ async def get_available_slots_for_day(
             "user_email": user_info.get("email") if user_info else "N/A"
         })
 
+
     capacity = capacity_business
     allowed_slots_set = set(all_slots_times)
 
@@ -112,7 +116,8 @@ async def get_available_slots_for_day(
         if not allowed: return []
         
         allowed_slots_set = set(allowed)
-        capacity = 1  
+        capacity = 1
+
 
     detailed_slots = []
     for time_slot in all_slots_times:

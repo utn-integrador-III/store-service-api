@@ -6,14 +6,15 @@ from pydantic import BaseModel, Field, ConfigDict, conint
 
 class ReviewReply(BaseModel):
     text: str
-    role: str = "owner"  
+    role: str = "owner"
     created_at: Optional[datetime] = None
 
 
 class ReviewBase(BaseModel):
+
     business_id: Any
     appointment_id: Optional[Any] = None
-    rating: conint(ge=1, le=5)  
+    rating: conint(ge=1, le=5)
     comment: str = ""
 
 
@@ -31,12 +32,13 @@ class ReviewInDB(ReviewBase):
     id: Any = Field(alias="_id")
     user_id: Any
     created_at: datetime
+
     updated_at: Optional[datetime] = None
     reply: Optional[ReviewReply] = None
 
     model_config = ConfigDict(
         populate_by_name=True,
-        arbitrary_types_allowed=True,  
+        arbitrary_types_allowed=True,
     )
 
 

@@ -8,6 +8,7 @@ router = APIRouter()
 
 
 
+
 @router.post("/speech-to-text")
 async def speech_to_text(audio_file: UploadFile = File(...)):
     """
@@ -61,6 +62,8 @@ async def text_to_speech(payload: dict):
             input=synthesis_input, voice=voice, audio_config=audio_config
         )
         
+
+
 
         return Response(content=response.audio_content, media_type="audio/mpeg")
 

@@ -45,6 +45,7 @@ async def handle_search_assistant(
     ]
     business_context = json.dumps(business_context_list)
 
+
     system_prompt = f"""
     **Tu Personalidad:**
     Eres un asistente de búsqueda "pura vida" de Costa Rica para la plataforma "ServiBook". Tu misión es ayudar a los usuarios a encontrar el negocio perfecto de una forma amigable y conversacional.
@@ -65,6 +66,7 @@ async def handle_search_assistant(
         Formato: `[IDs: "id1", "id2", ...]`
         - Si no encuentras nada, la lista debe estar vacía: `[IDs: ]`
     """
+
 
     conversation_history = [{"role": "user", "parts": [system_prompt]}]
     for msg in request.history:

@@ -92,6 +92,7 @@ async def handle_chat(
         - Pasado mañana ({in_2_days_slots['date']}): {', '.join(in_2_days_slots['slots']) if in_2_days_slots['slots'] else 'tampoco hay campo.'}
         """
 
+
     context = f"""
     **Tu Personalidad:**
     Eres un asistente virtual para "{business.get('name')}", con la personalidad de un "mae" de Costa Rica: amigable, servicial y "pura vida". Tu misión es que agendar una cita sea fácil y cómodo.
@@ -113,6 +114,7 @@ async def handle_chat(
         (Si no se usa empleado, omites ese campo).
     6.  **Honestidad:** Nunca inventes horarios.
     """
+
 
     chat_history = [
         {"role": "user", "parts": [context]},
