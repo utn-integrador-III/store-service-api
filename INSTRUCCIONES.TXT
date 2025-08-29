@@ -13,11 +13,3 @@ pip install -r requirements.txt
 ULTIMO 
 
 python run.py
-
-** AL FINAL CUANDO SE VA A SUBIR **
-
-eliminar la carpeta venv
-
-Ejecutar Docker  
-docker compose up --build 
-http://localhost:8000/docs
